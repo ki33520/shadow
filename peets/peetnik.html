@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Why peets</title>
+		<meta name="format-detection" content="telephone=no" />
+		<script type="text/javascript" src="static/js/flexible.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="static/css/swiper.min.css">
+		<link rel="stylesheet" type="text/css" href="static/css/main.css">
+	</head>
+	<body>
+		<div class="page page-index" id="app-index">
+			<kv :kv="kvData"></kv>
+			<div class="wrap-img"><img src="static/images/pn_01.jpg" /></div>
+			<Medialist :media="mediaDate"></Medialist>
+		</div>
+
+		<script type="text/javascript" src="static/js/vue.min.js"></script>
+		<script type="text/javascript" src="static/js/swiper.min.js"></script>
+		<script type="text/javascript" src="static/js/main.js"></script>
+
+		<script type="text/x-template" id="kv-template">
+			<div class="kv-list">
+				<div ref="swiper" class="swiper-container">
+					<div class="swiper-wrapper">
+						<div class="swiper-slide" v-for="(el, key) in kv">
+							<div class="wrap-img"><img v-bind:src="'static/images/'+el.img" /></div>
+						</div>
+					</div>
+					<div ref="pagination" class="swiper-pagination"></div>
+				</div>
+			</div>
+		</script>
+		<script type="text/x-template" id="media-template">
+			<div class="media-box media-box-2">
+				<ul class="media-list flex flex-wrap flex-h-between">
+					<li v-for="(el, key) in media" class="item" v-bind:class="{full: el.full}">
+						<a class="link" v-bind:href="el.link" v-if="el.link">
+							<div class="wrap-img"><img v-bind:src="'static/images/'+el.img" /></div>
+							<div class="title">{{el.title}}</div>
+						</a>
+						<div class="wrap" v-else>
+							<div class="cover-lock"></div>
+							<div class="wrap-img"><img v-bind:src="'static/images/'+el.img" /></div>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</script>
+		
+		<script type="text/javascript">
+			/* 编辑 start */
+			var mediaArr = [
+				{
+					img: 'pn_cg_01.jpg',
+					title: '大咖级皮粉在这里',
+					link: 'xx'
+				},
+				{
+					img: 'pn_cg_02.jpg'
+				},
+				{
+					img: 'pn_cg_03.jpg'
+				},
+				{
+					img: 'pn_cg_04.jpg'
+				},
+				{
+					img: 'pn_cg_05.jpg',
+					full: true
+				},
+			];
+			/* 编辑 end */
+
+			var mediaModel = Vue.extend({
+				template: '#media-template',
+				props: ['media']
+			})
+			var kvModel = Vue.extend({
+				template: '#kv-template',
+				props: ['kv'],
+				mounted: function(){
+					var self = this;
+					var swiper = this.$refs.swiper;
+					var pagination = this.$refs.pagination;
+					this.mySwiper = new Swiper(swiper, {
+						loop: true,
+						pagination: pagination
+					});
+				}
+			})
+
+
+			var appVue = new Vue({
+				name: 'app-index',
+				el: '#app-index',
+				components: {
+					Medialist: mediaModel,
+					kv: kvModel
+				},
+				data: function(){
+					return {
+						kvData: [
+							{
+								img: 'pn_kv_01.jpg'
+							},
+							{
+								img: 'pn_kv_01.jpg'
+							},
+							{
+								img: 'pn_kv_01.jpg'
+							},
+							{
+								img: 'pn_kv_01.jpg'
+							}
+						],
+						mediaDate: mediaArr
+					}
+				}
+			});
+		</script>
+	</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Bean card</title>
+		<meta name="format-detection" content="telephone=no" />
+		<script type="text/javascript" src="static/js/flexible.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="static/css/swiper.min.css">
+		<link rel="stylesheet" type="text/css" href="static/css/main.css">
+	</head>
+	<body>
+		<div class="page page-index" id="app-index">
+			<Tabnav :cards="cardsNum" :active="activeIndex"></Tabnav>
+			<Beancards :cards="cardsNum" :active="activeIndex"></Beancards>
+		</div>
+
+		<script type="text/javascript" src="static/js/vue.min.js"></script>
+		<script type="text/javascript" src="static/js/swiper.min.js"></script>
+		<script type="text/javascript" src="static/js/main.js"></script>
+
+		<script type="text/x-template" id="tabnav-template">
+			<div class="tabnav-list">
+				<div ref="swiper" class="swiper-container">
+					<div class="swiper-wrapper">
+						<div class="swiper-slide" v-for="(el, key) in cards">
+							{{el}}
+						</div>
+					</div>
+				</div>
+			</div>
+		</script>
+
+		<script type="text/x-template" id="beancards-template">
+			<div class="bc-list">
+				<div ref="swiper" class="swiper-container">
+					<div class="swiper-wrapper">
+						<div class="swiper-slide" v-for="(el, key) in cards">
+							<div class="wrap-img"><img v-bind:src="'static/images/bc_'+(el<10 ? '0'+el : el)+'.png'" /></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</script>
+		
+		<script type="text/javascript">
+
+			var tabnavModel = Vue.extend({
+				template: '#tabnav-template',
+				props: ['cards','active'],
+				mounted: function(){
+					console.log(this.active)
+					var self = this;
+					var swiper = this.$refs.swiper;
+					this.mySwiper = new Swiper(swiper, {
+						loop: true,
+						effect: 'coverflow',
+						grabCursor: true,
+				        centeredSlides: true,
+				        slidesPerView: 5,
+				        coverflow: {
+				            rotate: 50,
+				            stretch: 0,
+				            depth: 100,
+				            modifier: 1,
+				            slideShadows : true
+				        }
+					});
+				},
+				watch: {
+					'active': {
+						handler: function(a,b){
+							this.mySwiper.slideTo(a-1);
+						}
+					}
+				}
+			})
+			var beancardsModel = Vue.extend({
+				template: '#beancards-template',
+				props: ['cards','active'],
+				mounted: function(){
+					var self = this;
+					var swiper = this.$refs.swiper;
+					this.mySwiper = new Swiper(swiper, {
+						loop: true,
+						onSlideChangeEnd: function(sw){
+							self.$parent.activeIndex = sw.activeIndex;
+						}
+					});
+				}
+			})
+
+
+			var appVue = new Vue({
+				name: 'app-index',
+				el: '#app-index',
+				components: {
+					Tabnav: tabnavModel,
+					Beancards: beancardsModel
+				},
+				watch: {
+					'activeIndex': {
+						handler: function(a,b){
+							var self = this;
+							console.log(a);
+						}
+					}
+				},
+				mounted: function(){
+					var s1 = this.$children[0].mySwiper;
+					var s2 = this.$children[1].mySwiper;
+					s1.params.control = s2;
+					console.log(s2)
+					s2.onTouchStart = function(){
+						console.log(1)
+					}
+				},
+				data: function(){
+					return {
+						cardsNum: 12,
+						activeIndex: 1
+					}
+				}
+			});
+		</script>
+	</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Why peets</title>
+		<meta name="format-detection" content="telephone=no" />
+		<script type="text/javascript" src="static/js/flexible.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="static/css/swiper.min.css">
+		<link rel="stylesheet" type="text/css" href="static/css/main.css">
+	</head>
+	<body>
+		<div class="page page-index" id="app-index">
+			<kv :kv="kvData"></kv>
+			<div class="wrap-img"><img src="static/images/wp_01.jpg" /></div>
+			<Medialist :media="mediaDate"></Medialist>
+		</div>
+
+		<script type="text/javascript" src="static/js/vue.min.js"></script>
+		<script type="text/javascript" src="static/js/swiper.min.js"></script>
+		<script type="text/javascript" src="static/js/main.js"></script>
+
+		<script type="text/x-template" id="kv-template">
+			<div class="kv-list">
+				<div ref="swiper" class="swiper-container">
+					<div class="swiper-wrapper">
+						<div class="swiper-slide" v-for="(el, key) in kv">
+							<video controls="controls"
+								v-bind:poster="'static/images/'+el.img"
+								v-bind:src="'static/video/'+el.video">
+								your browser does not support the video tag
+							</video>
+						</div>
+					</div>
+					<div ref="pagination" class="swiper-pagination"></div>
+				</div>
+			</div>
+		</script>
+		<script type="text/x-template" id="media-template">
+			<div class="media-box">
+				<ul class="media-list flex flex-wrap flex-h-between">
+					<li v-for="(el, key) in media" class="item" v-bind:class="{full: el.full}">
+						<a v-bind:href="el.link">
+							<div class="wrap-img"><img v-bind:src="'static/images/'+el.img" /></div>
+							<div class="title">{{el.title}}</div>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</script>
+		
+		<script type="text/javascript">
+			/* 编辑 start */
+			var mediaArr = [
+				{
+					img: 'wp_cg_01.jpg',
+					title: '精品咖啡祖师爷',
+					link: ''
+				},
+				{
+					img: 'wp_cg_02.jpg',
+					title: '不是所有咖啡生来都一样',
+					link: ''
+				},
+				{
+					img: 'wp_cg_03.jpg',
+					title: '咖啡豆不会说谎',
+					link: ''
+				},
+				{
+					img: 'wp_cg_04.jpg',
+					title: '新鲜是我们的追求',
+					link: ''
+				},
+			];
+			/* 编辑 end */
+
+			var mediaModel = Vue.extend({
+				template: '#media-template',
+				props: ['media']
+			})
+			var kvModel = Vue.extend({
+				template: '#kv-template',
+				props: ['kv'],
+				mounted: function(){
+					var self = this;
+					var swiper = this.$refs.swiper;
+					var pagination = this.$refs.pagination;
+					this.mySwiper = new Swiper(swiper, {
+						loop: true,
+						pagination: pagination
+					});
+				}
+			})
+
+
+			var appVue = new Vue({
+				name: 'app-index',
+				el: '#app-index',
+				components: {
+					Medialist: mediaModel,
+					kv: kvModel
+				},
+				data: function(){
+					return {
+						kvData: [
+							{
+								img: 'wp_kv_01.jpg',
+								video: 'movie.mp4'
+							},
+							{
+								img: 'wp_kv_02.jpg',
+								video: 'movie.mp4'
+							}
+						],
+						mediaDate: mediaArr
+					}
+				}
+			});
+		</script>
+	</body>
+</html>
